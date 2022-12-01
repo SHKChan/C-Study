@@ -9,6 +9,9 @@ namespace P7_HelloWorld
         //定义程序的入口方法,写法固定,方法注释另起一行
         static void Main(string[] args)
         {
+            int a = 10;
+            string str = "Test";
+            byte bt = 200;
             Console.WriteLine("Hello World!");
 
             Console.WriteLine("");
