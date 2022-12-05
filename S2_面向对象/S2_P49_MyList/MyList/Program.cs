@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace MyList
@@ -7,85 +8,72 @@ namespace MyList
     {
         static void Main(string[] args)
         {
-            MyList<int> ls = new MyList<int>(10);
-            ls.Add(1);
-            ls.Insert(3, 6);
-            ls.Insert(6, 6);
+            MyList<int> ls = new MyList<int>() { 5,4,3,2,1 };
+            ls.Add(-1);
+            ls.Insert(1, 6);
+            ls.Insert(1, 8);
             ls.Sort();
+            Console.WriteLine("ShowList: ");
             ShowList(ls);
+            Console.WriteLine();
+            Console.WriteLine("ls[7] = " + ls[7]);
             Console.ReadLine();
         }
 
         static void ShowList(MyList<int> ls)
         {
-            for (int i = 0; i < ls.Count; i++)
+            foreach(int item in ls)
             {
-                Console.WriteLine(ls[i]);
+                Console.WriteLine(item);
             }
 
         }
     }
 
     //利用数组实现的泛型列表类
-    class MyList<T>
+    class MyList<T> : IEnumerable<T>
     {
-        private int count;
-        private int capacity = 4;
         private T[] ls;
-
-        public int Count { get; }
-        public int Capacity { get; }
+        
+        public int Count { get; private set; }
+        public int Capacity { get; private set; }
 
         private void Initialize()
         {
-            this.count = 0;
-            this.ls = new T[this.capacity];
+            this.Count = 0;
+            this.ls = new T[this.Capacity];
         }
 
+        //无参构造
         public MyList()
         {
+            this.Capacity = 4;
             Initialize();
         }
 
+        //指定容量构造
         public MyList(int capacity)
         {
-            this.capacity = capacity;
+            this.Capacity = capacity;
             Initialize();
-        }
-
-        public MyList(IEnumerable<T> collection)
-        {
-            Initialize();
-            foreach (T item in collection)
-            {
-                this.Add(item);
-            }
-        }
-
-        private void IsOutofRange(int index)
-        {
-            if (index < 0 || index > this.count)
-            {
-                throw new ArgumentOutOfRangeException();
-            }
         }
 
         //增加元素
         public void Add(T item)
         {
-            if (this.count < this.capacity)
+            if (this.Count < this.Capacity)
             {
-                ls[this.count++] = item;
+                ls[this.Count++] = item;
             }
             else
             {
-                this.capacity *= 2;
-                T[] lsNew = new T[this.capacity];
-                for (int i = 0; i < this.count; i++)
+                this.Capacity *= 2;
+                T[] lsNew = new T[this.Capacity];
+                for (int i = 0; i < this.Count; i++)
                 {
                     lsNew[i] = ls[i];
                 }
-                lsNew[count++] = item;
+                lsNew[this.Count++] = item;
                 this.ls = lsNew;
             }
         }
@@ -93,16 +81,19 @@ namespace MyList
         //插入元素至
         public void Insert(int index, T item)
         {
-            this.IsOutofRange(index);
+            if (index < 0 || index > this.Count)
+            {
+                throw new ArgumentOutOfRangeException();
+            }
 
-            if (index == count)
+            if (index == this.Count)
             {
                 this.Add(item);
                 return;
             }
 
-            T[] lsNew = new T[this.capacity];
-            for (int i = 0; i < this.count; i++)
+            T[] lsNew = new T[this.Capacity];
+            for (int i = 0; i < this.Count; i++)
             {
                 if (index > i)
                 {
@@ -119,7 +110,7 @@ namespace MyList
                 }
             }
             this.ls = lsNew;
-            this.count++;
+            this.Count++;
         }
         
         //索引器
@@ -128,13 +119,19 @@ namespace MyList
             get
             {
 
-                this.IsOutofRange(index);
+                if (index < 0 || index > this.Count - 1)
+                {
+                    throw new ArgumentOutOfRangeException();
+                }
                 return this.ls[index];
             }
             set
             {
 
-                this.IsOutofRange(index);
+                if (index < 0 || index > this.Count - 1)
+                {
+                    throw new ArgumentOutOfRangeException();
+                }
                 this.ls[index] = value;
             }
         }
@@ -142,9 +139,12 @@ namespace MyList
         //移除指定位置元素
         public void RemoveAt(int index)
         {
-            this.IsOutofRange(index);
-            T[] lsNew = new T[this.capacity];
-            for (int i = 0; i < this.count; i++)
+            if (index < 0 || index > this.Count -1 )
+            {
+                throw new ArgumentOutOfRangeException();
+            }
+            T[] lsNew = new T[this.Capacity];
+            for (int i = 0; i < this.Count; i++)
             {
                 if (index > i)
                 {
@@ -160,13 +160,13 @@ namespace MyList
                 }
             }
             this.ls = lsNew;
-            this.count--;
+            this.Count--;
         }
 
         //匹配到的第一个元素的索引
         public int IndexOf(T item)
         {
-            for (int i = 0; i < this.count; i++)
+            for (int i = 0; i < this.Count; i++)
             {
                 dynamic var1 = item;
                 dynamic var2 = this.ls[i];
@@ -181,7 +181,7 @@ namespace MyList
         //匹配到的最后一个元素的索引
         public int LastIndexOf(T item)
         {
-            for (int i = this.count; i > 0; i--)
+            for (int i = this.Count; i > 0; i--)
             {
                 dynamic var1 = item;
                 dynamic var2 = this.ls[i];
@@ -196,10 +196,10 @@ namespace MyList
         //从小到大排序
         public void Sort()
         {
-            for (int i = 0; i < this.count; i++)
+            for (int i = 0; i < this.Count; i++)
             {
                 dynamic item = this.ls[i];
-                for (int j = i+1; j < this.count; j++)
+                for (int j = i+1; j < this.Count; j++)
                 {
                     dynamic var = this.ls[j];
                     if (var < item)
@@ -211,5 +211,57 @@ namespace MyList
                 }
             }
         }
+
+        //提供迭代接口
+        //继承IEnumerable<T>需要实现的接口
+        public IEnumerator<T> GetEnumerator()
+        {
+            return new MyEnumerator(this);
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return this.GetEnumerator();
+        }
+
+        //真正的迭代器
+        //继承IEnumerator<T>实现接口
+        class MyEnumerator : IEnumerator<T>
+        {
+            private int index = -1;
+            private MyList<T> myList;
+            object IEnumerator.Current => Current;
+
+            public T Current
+            {
+                get
+                {
+                    if (index < 0 || index >= myList.Count)
+                    {
+                        return default(T);
+                    }
+                    return myList.ls[index];
+                }
+            }
+
+            public MyEnumerator(MyList<T> ls)
+            {
+                this.myList = ls;
+            }
+
+            public void Dispose() { }
+
+            public bool MoveNext()
+            {
+                return ++index < myList.Count;
+            }
+
+            public void Reset()
+            {
+                index = -1;
+            }
+
+        }
+
     }
 }
