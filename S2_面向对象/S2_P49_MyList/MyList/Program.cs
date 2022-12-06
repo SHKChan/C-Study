@@ -139,7 +139,7 @@ namespace MyList
         //移除指定位置元素
         public void RemoveAt(int index)
         {
-            if (index < 0 || index > this.Count -1 )
+            if (index < 0 || index > this.Count -1)
             {
                 throw new ArgumentOutOfRangeException();
             }
