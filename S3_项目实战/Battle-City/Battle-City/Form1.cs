@@ -16,34 +16,34 @@ namespace Battle_City
         public Form1()
         {
             InitializeComponent();
-            this.StartPosition = FormStartPosition.CenterScreen;
+            StartPosition = FormStartPosition.CenterScreen;
 
-            this.frameWork = new GameFrameWork();
-            this.graphics = this.CreateGraphics();
-            this.bitmap = new Bitmap(this.ClientSize.Width, this.ClientSize.Height);
-            GameFrameWork.graphics = Graphics.FromImage(this.bitmap);
+            frameWork = new GameFrameWork();
+            graphics = CreateGraphics();
+            bitmap = new Bitmap(ClientSize.Width, ClientSize.Height);
+            GameFrameWork.graphics = Graphics.FromImage(bitmap);
 
-            this.thread = new Thread(new ThreadStart(GameMainThread));
-            this.thread.Start();
+            thread = new Thread(new ThreadStart(GameMainThread));
+            thread.Start();
         }
 
         public void GameMainThread()
         {
             //GameFrameWork
-            this.frameWork.Start();
+            frameWork.Start();
 
             int sleepTime = 1000 / 60;
             while (true)
             {
-                this.frameWork.Update();
-                this.graphics.DrawImage(this.bitmap, 0, 0);
+                frameWork.Update();
+                graphics.DrawImage(bitmap, 0, 0);
                 Thread.Sleep(sleepTime); //FPS set to 60
             }
         }
 
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
         {
-            this.thread.Abort();
+            thread.Abort();
         }
     }
 }

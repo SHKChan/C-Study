@@ -17,9 +17,16 @@ namespace Battle_City
         public Direction Dir { get; set; }
         public Bitmap[] imgArr = new Bitmap[4];
 
+        public MovableObejct(int x, int y, int speed)
+        {
+            X = x;
+            X = y;
+            Speed = speed;
+        }
+
         protected override Bitmap GetImage()
         {
-            Bitmap imgTemp = imgArr[(int)this.Dir];
+            Bitmap imgTemp = imgArr[(int)Dir];
             imgTemp.MakeTransparent(Color.Black);
             return imgTemp;
         }

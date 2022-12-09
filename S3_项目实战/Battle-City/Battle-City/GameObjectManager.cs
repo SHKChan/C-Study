@@ -1,58 +1,80 @@
-﻿using Battle_City.Properties;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 
 namespace Battle_City
 {
     class GameObjectManager : Object
     {
-        private ImmovableType[,] map;
         private List<GameObject> objList;
-        int winW;
-        int winH;
+        private ImmovableType[,] Map { get; set; }
+        public int MapSzCoorX { get; private set; }
+        public int MapSzCoorY { get; private set; }
+        public int MapSzPixelX { get; private set; }
+        public int MapSzPixelY { get; private set; }
+
+        public int Coor2Pixel(double sz, int t)
+        {
+            if (Convert.ToBoolean(t))
+                return (int)(sz * ImmovableObject.sz.Width);
+            else
+                return (int)(sz * ImmovableObject.sz.Height);
+        }
+
+        public int Pixel2Coor(double sz, int t)
+        {
+            if (Convert.ToBoolean(t))
+                return (int)(sz / ImmovableObject.sz.Width);
+            else
+                return (int)(sz / ImmovableObject.sz.Height);
+        }
 
         public GameObjectManager()
         {
-            this.winW = ImmovableObject.sz.Width * 26;
-            this.winH = ImmovableObject.sz.Height * 28;
-            this.map = new ImmovableType[this.winW, this.winH];
-            this.objList = new List<GameObject>();
+            MapSzCoorX = 26;
+            MapSzCoorY = 28;
+            int MapSzPixelX = Coor2Pixel(MapSzCoorX, 0);
+            int MapSzPixelY = Coor2Pixel(MapSzCoorY, 1);
+            Map = new ImmovableType[MapSzPixelX, MapSzPixelY];
+            objList = new List<GameObject>();
         }
 
         public void CreateMap()
         {
             //top wall
-            CreateObjectList(1, 1, 2, 5.5, ImmovableType.Wall);
-            CreateObjectList(3, 1, 4, 5.5, ImmovableType.Wall);
-            CreateObjectList(5, 1, 6, 4.5, ImmovableType.Wall);
-            CreateObjectList(7, 1, 8, 4.5, ImmovableType.Wall);
-            CreateObjectList(9, 1, 10, 5.5, ImmovableType.Wall);
-            CreateObjectList(11, 1, 12, 5.5, ImmovableType.Wall);
+            CreateObjectList(2, 2, 4, 11, ImmovableType.Wall);
+            CreateObjectList(6, 2, 8, 11, ImmovableType.Wall);
+            CreateObjectList(10, 2, 12, 9, ImmovableType.Wall);
+            CreateObjectList(14, 2, 16, 9, ImmovableType.Wall);
+            CreateObjectList(18, 2, 20, 11, ImmovableType.Wall);
+            CreateObjectList(22, 2, 24, 11, ImmovableType.Wall);
 
             //bottom wall
-            CreateObjectList(1, 8.5, 2, 13, ImmovableType.Wall);
-            CreateObjectList(3, 8.5, 4, 13, ImmovableType.Wall);
-            CreateObjectList(5, 7.5, 6, 11, ImmovableType.Wall);
-            CreateObjectList(7, 7.5, 8, 11, ImmovableType.Wall);
-            CreateObjectList(9, 8.5, 10, 13, ImmovableType.Wall);
-            CreateObjectList(11, 8.5, 12, 13, ImmovableType.Wall);
+            CreateObjectList(2, 17, 4, 26, ImmovableType.Wall);
+            CreateObjectList(6, 17, 8, 26, ImmovableType.Wall);
+            CreateObjectList(10, 15, 12, 22, ImmovableType.Wall);
+            CreateObjectList(14, 15, 16, 22, ImmovableType.Wall);
+            CreateObjectList(18, 17, 20, 26, ImmovableType.Wall);
+            CreateObjectList(22, 17, 24, 26, ImmovableType.Wall);
 
             //middle wall
-            CreateObjectList(2, 6.5, 4, 7.5, ImmovableType.Wall);
-            CreateObjectList(9, 6.5, 11, 7.5, ImmovableType.Wall);
-            CreateObjectList(5, 5.5, 6, 6.5, ImmovableType.Wall);
-            CreateObjectList(7, 5.5, 8, 6.5, ImmovableType.Wall);
-            CreateObjectList(6, 8, 7, 9, ImmovableType.Wall);
-
-            //boss
-            CreateObjectList(5.5, 12.5, 7.5, 14, ImmovableType.Wall);
-            CreateObjectList(6, 13, 6.5, 13.5, ImmovableType.Boss);
+            CreateObjectList(4, 13, 8, 15, ImmovableType.Wall);
+            CreateObjectList(18, 13, 22, 15, ImmovableType.Wall);
+            CreateObjectList(10, 11, 12, 13, ImmovableType.Wall);
+            CreateObjectList(14, 11, 16, 13, ImmovableType.Wall);
+            CreateObjectList(12, 16, 14, 18, ImmovableType.Wall);
 
             //steel
-            CreateObjectList(0, 7, 1, 7.5, ImmovableType.Steel);
-            CreateObjectList(12, 7, 13, 7.5, ImmovableType.Steel);
-            CreateObjectList(6, 2, 7, 3, ImmovableType.Steel);
-            CreateObjectList(6, 9, 7, 10, ImmovableType.Steel);
+            CreateObjectList(0, 14, 2, 15, ImmovableType.Steel);
+            CreateObjectList(24, 14, 26, 15, ImmovableType.Steel);
+            CreateObjectList(12, 4, 14, 6, ImmovableType.Steel);
+            CreateObjectList(12, 18, 14, 20, ImmovableType.Steel);
+
+            //boss
+            CreateObjectList(11, 25, 15, 26, ImmovableType.Wall);
+            CreateObjectList(11, 26, 12, 28, ImmovableType.Wall);
+            CreateObjectList(14, 26, 15, 28, ImmovableType.Wall);
+            CreateObjectList(12, 26, 13, 27, ImmovableType.Boss);
         }
 
         private void CreateObjectList(double r1, double c1, double r2, double c2, ImmovableType type)
@@ -60,17 +82,25 @@ namespace Battle_City
             int width = ImmovableObject.sz.Width;
             int height = ImmovableObject.sz.Height;
 
-            int x1 = (int) (r1 * height * 2);
-            int y1 = (int)(c1 * width * 2);
-            int x2 = (int)(r2 * height * 2);
-            int y2 = (int)(c2 * width * 2);
+            int x1 = Coor2Pixel(r1, 0);
+            int y1 = Coor2Pixel(c1, 0);
+            int x2 = Coor2Pixel(r2, 0);
+            int y2 = Coor2Pixel(c2, 0);
 
             for (int x = x1; x < x2; x+= height)
             {
                 for (int y = y1; y < y2; y += width)
                 {
-                    map[x, y] = (ImmovableType)type;
-                    this.objList.Add(new ImmovableObject(x, y, map[x, y]));
+                    int coorX = Pixel2Coor(x, 0);
+                    int coorY = Pixel2Coor(y, 1);
+                    Map[coorX, coorY] = type;
+                    if (ImmovableType.Boss == type)
+                    {
+                        Map[coorX + 1, coorY] = type;
+                        Map[coorX, coorY + 1] = type;
+                        Map[coorX + 1, coorY + 1] = type;
+                    }
+                    objList.Add(new ImmovableObject(x, y, type));
                 }
             }
         }

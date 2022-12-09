@@ -6,23 +6,23 @@ namespace Battle_City
     class GameFrameWork
     {
         public static Graphics graphics;
-        private GameObjectManager manager;
+        public GameObjectManager Manager { get; private set; }
 
         public GameFrameWork()
         {
             GameFrameWork.graphics = null;
-            this.manager = new GameObjectManager();
+            Manager = new GameObjectManager();
         }
 
         public void Start()
         {
-            this.manager.CreateMap();
+            Manager.CreateMap();
         }
 
         public void Update()
         {
             GameFrameWork.graphics.Clear(Color.Black);
-            this.manager.DrawMap();
+            Manager.DrawMap();
         }
     }
 }

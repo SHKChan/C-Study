@@ -15,7 +15,7 @@ namespace Battle_City
         public void Draw()
         {
             Graphics g = GameFrameWork.graphics;
-            g.DrawImage(this.GetImage(), this.X, this.Y);
+            g.DrawImage(GetImage(), X, Y);
         }
 
         protected abstract Bitmap GetImage();

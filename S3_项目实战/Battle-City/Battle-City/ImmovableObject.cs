@@ -15,32 +15,33 @@ namespace Battle_City
     class ImmovableObject : GameObject
     {
         public static Size sz = new Size(15, 15);
+        public static bool isBossDraw = false;
 
         public ImmovableObject(int x, int y, ImmovableType t)
         {
-            this.X = x;
-            this.Y = y;
-            this.T = (int)t;
+            X = x;
+            Y = y;
+            T = (int)t;
             switch (t)
             {
                 case ImmovableType.Wall:
-                    this.Img = Resources.wall;
+                    Img = Resources.wall;
                     break;
                 case ImmovableType.Steel:
-                    this.Img = Resources.steel;
+                    Img = Resources.steel;
                     break;
                 case ImmovableType.Boss:
-                    this.Img = Resources.boss;
+                    Img = Resources.boss;
                     break;
                 default:
-                    this.Img = Resources.wall;
+                    Img = Resources.wall;
                     break;
             }
         }
 
         protected override Bitmap GetImage()
         {
-            return this.Img;
+            return Img;
         }
     }
 }
